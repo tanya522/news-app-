@@ -120,7 +120,7 @@
     <script>
         // Function to fetch and display news based on search query
         function fetchNews(query = 'sports') {
-            var url = `https://newsapi.org/v2/everything?q=${query}&sortBy=popularity&language=en&apiKey=fb34aae105524eb29408ab7a62cd6d8b`;
+            var url = `https://newsapi.org/v2/everything?q=${query}&sortBy=popularity&language=en&apiKey=;
 
             // Show the spinner while loading the data
             document.getElementById('spinner-container').style.display = 'block';
