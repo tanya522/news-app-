@@ -1,0 +1,1 @@
+A simple and responsive News App built using HTML, CSS, JavaScript, and NewsAPI. It fetches live news articles by category and keyword using the Fetch API and displays them in card format with images, titles, and links. Bootstrap is used for styling and layout.
