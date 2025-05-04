@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>News App - 12 Cards Layout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: lightblue;
+            /* Ensure full height of the page */
+        }
+
+        .navbar {
+            position: fixed;
+            /* Fix the navbar to the top */
+            top: 0;
+            /* Align the navbar to the top */
+            left: 0;
+            /* Align the navbar to the left */
+            width: 100%;
+            /* Full width */
+            background-color: #343a40;
+            /* Dark Blue */
+            border-bottom: 2px solid white;
+            /* Border at the bottom of the navbar */
+            z-index: 1000;
+            /* Ensure the navbar is on top of other content */
+        }
+
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            color: #fff;
+            /* Navbar items in white */
+        }
+
+        body {
+            padding-top: 60px;
+            /* Add padding to the top of the body to prevent content from hiding behind the navbar */
+        }
+
+        .container {
+            margin-top: 20px;
+            /* Optional: Add some space below the navbar */
+        }
+
+        /* Spinner styles */
+        .spinner-container {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        /* Card styles */
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-img-top {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .navbar-brand{
+            
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">News-Monkey</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Sports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Entertainment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Weather</a></li>
+                </ul>
+                <form class="d-flex" id="search-form" role="search">
+                    <input class="form-control me-2" type="search" id="search-input" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <h1 class="mb-4 text-center"><u>Welcome to our News App!!</u></h1>
+
+        <!-- Spinner -->
+        <div class="spinner-container" id="spinner-container">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- News Container -->
+        <div class="row g-4" id="news-container">
+            <!-- News cards will be added here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to fetch and display news based on search query
+        function fetchNews(query = 'sports') {
+            var url = `https://newsapi.org/v2/everything?q=${query}&sortBy=popularity&language=en&apiKey=fb34aae105524eb29408ab7a62cd6d8b`;
+
+            // Show the spinner while loading the data
+            document.getElementById('spinner-container').style.display = 'block';
+            var newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = ''; // Clear the previous news
+
+            fetch(url)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    console.log(data);
+                    // Hide the spinner after fetching data
+                    document.getElementById('spinner-container').style.display = 'none';
+
+                    // Check if there are articles
+                    if (data.articles && data.articles.length > 0) {
+                        // Loop through the articles and create cards
+                        data.articles.forEach(function (article) {
+                            var cardHTML = `
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <img src="${article.urlToImage || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${article.title}">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${article.title}</h5>
+                                            <p class="card-text">${article.description}</p>
+                                            <a href="${article.url}" class="btn btn-primary" target="_blank">Read More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            newsContainer.innerHTML += cardHTML;
+                        });
+                    } else {
+                        newsContainer.innerHTML = '<p>No news found for this query.</p>';
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error fetching the data:', error);
+                    document.getElementById('spinner-container').style.display = 'none';
+                });
+        }
+
+        // Load initial news (default search term: sports)
+        fetchNews('sports');
+
+        // Add event listener to the search form
+        document.getElementById("search-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+            var query = document.getElementById("search-input").value.trim(); // Get search input value
+            if (query) {
+                fetchNews(query); // Fetch news based on the search query
+            } else {
+                fetchNews('sports'); // If no query, fetch news about sports
+            }
+        });
+    </script>
+
+</body>
+
+</html>
